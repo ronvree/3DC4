@@ -153,7 +153,7 @@ public class GameState {
     }
 
     /**
-     * Helper method of hasConnectNAt
+     * Helper method of lastMoveWasWinning
      * Calculates the coordinates of a slot in a certain direction and distance from the origin
      */
     private int[] getLocation(final int[] origin, final int[] direction, final int multiplier) {
@@ -163,7 +163,7 @@ public class GameState {
     }
 
     /**
-     * Helper method of hasConnectNAt
+     * Helper method of lastMoveWasWinning
      * Count the chain length of the specified color at the origin in a certain direction (bounded to chain length n)
      *
      * Careful: Works for color == null as well!
