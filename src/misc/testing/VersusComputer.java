@@ -4,7 +4,6 @@ import misc.Color;
 import misc.Game;
 import misc.GameState;
 import misc.player.computer.ComputerPlayer;
-import misc.player.computer.strategy.minimax.NegaMaxAlphaBetaTestVersion;
 import misc.player.human.HumanPlayer;
 
 /**
