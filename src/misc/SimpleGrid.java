@@ -217,7 +217,26 @@ public class SimpleGrid implements Grid {
             return copy;
         }
 
+        /**
+         * Column equality is determined by its content
+         */
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Column column = (Column) o;
+
+            // Probably incorrect - comparing Object[] arrays with Arrays.equals
+            return Arrays.equals(slots, column.slots);
+
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.deepHashCode(slots);
+        }
     }
 
 
