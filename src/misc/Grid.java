@@ -84,15 +84,6 @@ public interface Grid {
     boolean isFull();
 
     /**
-     * Checks if there exist a chain of length n at the top piece of the specified column
-     * @param n -- Required chain length
-     * @param x -- x coordinate of the column to check
-     * @param y -- y coordinate of the column to check
-     * @return whether a chain of length n has been formed by the last piece dropped in the specified column
-     */
-//    boolean hasConnectNAt(int n, int x, int y);
-
-    /**
      * Get a new grid instance with the same piece positions
      */
     Grid deepCopy();
