@@ -1,5 +1,8 @@
 package misc;
 
+import javafx.application.Platform;
+import javafx.stage.Stage;
+import misc.gui.GUI;
 import misc.player.Player;
 import misc.player.human.input.DrawRequest;
 import misc.player.human.input.MoveInput;
@@ -19,7 +22,7 @@ public class Game {
     public static final int NUMBER_OF_PLAYERS = 2;
     /** Number of pieces of the same color that have to form a straight line in order to win */
     public static final int CONNECT = 4;
-
+    public static final boolean USEGUI = true;
     /**
      * Instance variables
      */
@@ -30,17 +33,23 @@ public class Game {
     private GameState state;
     /** Index of the player that has to make a move */
     private int currentPlayer;
-
+    private GUI gui;
     /**
      * Constructor
      */
 
-    public Game(Player p1, Player p2)   {
+    public Game(Player p1, Player p2) {
+        if (USEGUI){
+            gui = new GUI();
+        }
         this.players = new Player[NUMBER_OF_PLAYERS];
         this.players[0] = p1;
         this.players[1] = p2;
         this.state = new GameState();
         this.currentPlayer = 0;
+
+
+
     }
 
     /**
@@ -129,7 +138,13 @@ public class Game {
      * Show the grid
      */
     private void showGrid() {
-        System.out.println(TUI.prettyPrint(state));
+
+        if (USEGUI){
+            gui.update(state);
+        } else {
+            System.out.println(TUI.prettyPrint(state));
+        }
+
     }
 
     /**
