@@ -129,7 +129,15 @@ public class SimpleGrid implements Grid {
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(grid);
+        Column[] columns = new Column[Grid.XRANGE * Grid.YRANGE];
+        int i = 0;
+        for (int x = 0; x < Grid.XRANGE; x++) {
+            for (int y = 0; y < Grid.YRANGE; y++) {
+                columns[i] = grid[x][y];
+                i++;
+            }
+        }
+        return Arrays.deepHashCode(columns);
     }
 
     /**
