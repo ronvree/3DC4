@@ -16,6 +16,8 @@ import misc.Grid;
 import javax.swing.*;
 import java.awt.*;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Created by Rogier on 17-11-16 in Enschede.
  */
@@ -42,6 +44,11 @@ public class GUI extends JFrame {
 
 
     public void update(GameState gameState){
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         this.setContentPane(new GUIPanel(gameState));
         this.pack();
     }
