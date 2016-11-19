@@ -3,7 +3,6 @@ package misc.testing;
 import misc.Color;
 import misc.Game;
 import misc.GameState;
-import misc.Grid;
 import misc.player.computer.ComputerPlayer;
 import misc.player.computer.strategy.NaiveStrategy;
 

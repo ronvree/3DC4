@@ -37,7 +37,7 @@ public abstract class NegaMax implements Strategy {
      * Create a new negamax strategy
      */
     public NegaMax(int depth, Color color) {
-        this.depth = depth;
+        this.depth = Math.max(1, depth);
         this.maximizingColor = color;
     }
 
@@ -64,15 +64,19 @@ public abstract class NegaMax implements Strategy {
      */
     @Override
     public MoveInput determineMove(GameState state) {
-        negamax(state, this.depth, this.maximizingColor);
+        this.setBestMove(null);
+        negamax(state, this.depth, this.maximizingColor, 1);
         return new MoveInput(bestMove.getX(), bestMove.getY());
     }
 
     /**
      * Negamax algorithm
      */
-    private int negamax(GameState state, int depth, Color color)   {
+    private int negamax(GameState state, int depth, Color color, int c)   {
         /** Check base cases */
+        if (state.lastMoveWasWinning()) {
+            return c * WIN;
+        }
         if (depth == 0 || state.gridIsFull()) {
             return score(state, color);
         }
@@ -86,14 +90,7 @@ public abstract class NegaMax implements Strategy {
             /** Apply move */
             state.doMove(move);
             /** Determine score */
-            int score;
-            /** -- Check if it is a winning move */
-            if (state.lastMoveWasWinning()) {
-                score = WIN;
-            /** -- No winning move */
-            } else {
-                score = -negamax(state, depth - 1, color.other());
-            }
+            int score = -negamax(state, depth - 1, color.other(), -c);
             /** Compare with previous results */
             if (bestScore < score) {
                 bestScore = score;
@@ -124,7 +121,7 @@ public abstract class NegaMax implements Strategy {
     }
 
     public void setDepth(int depth) {
-        this.depth = depth;
+        this.depth = Math.max(1, depth);
     }
 
     protected void setBestMove(Move bestMove) {

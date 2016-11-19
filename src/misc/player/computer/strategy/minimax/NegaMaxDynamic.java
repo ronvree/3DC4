@@ -32,7 +32,8 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
      */
     @Override
     public MoveInput determineMove(GameState state) {
-        negamaxDynamic(state, this.getDepth(), this.getMaximizingColor(), -Integer.MAX_VALUE, Integer.MAX_VALUE);
+        this.setBestMove(null);
+        negamaxDynamic(state, this.getDepth(), this.getMaximizingColor(), -Integer.MAX_VALUE, Integer.MAX_VALUE, 1);
         tt.clear();
         return new MoveInput(getBestMove().getX(), getBestMove().getY());
     }
@@ -40,7 +41,7 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
     /**
      * Negamax algorithm
      */
-    private int negamaxDynamic(GameState state, int depth, Color color, int alpha, int beta) {
+    private int negamaxDynamic(GameState state, int depth, Color color, int alpha, int beta, int c) {
         int alphaOrig = alpha;
         TableEntry entry = tt.get(state.hashCode());
         if (entry != null && entry.getDepth() >= depth) {
@@ -56,10 +57,15 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
                 return entry.getValue();
             }
         }
+
         /** Check base cases */
+        if (state.lastMoveWasWinning()) {
+            return c * WIN;
+        }
         if (depth == 0 || state.gridIsFull()) {
             return score(state, color);
         }
+
         /** Generate move options */
         List<Move> moveOptions = Strategy.generatePossibleMoves(state, color);
         /** Calculate order in which moves should be evaluated */
@@ -70,12 +76,7 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
             /** Apply move */
             state.doMove(move);
             /** Determine score */
-            int score;
-            if (state.lastMoveWasWinning()) {
-                score = WIN;
-            } else {
-                score = -negamaxDynamic(state, depth - 1, color.other(), -beta, -alpha);
-            }
+            int score = -negamaxDynamic(state, depth - 1, color.other(), -beta, -alpha, -c);
             /** Compare with previous results */
             if (bestScore < score) {
                 bestScore = score;
@@ -164,21 +165,26 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
         private final int depth;
         private final int value;
 
-        public TableEntry(int flag, int depth, int value) {
+        TableEntry(int flag, int depth, int value) {
             this.flag = flag;
             this.depth = depth;
             this.value = value;
         }
 
-        public int getFlag() {
+        @Override
+        public String toString() {
+            return String.format("TTEntry: Flag %d, Depth %d, Value %d", flag, depth, value);
+        }
+
+        int getFlag() {
             return flag;
         }
 
-        public int getDepth() {
+        int getDepth() {
             return depth;
         }
 
-        public int getValue() {
+        int getValue() {
             return value;
         }
 

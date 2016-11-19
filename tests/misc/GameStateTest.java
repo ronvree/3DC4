@@ -47,7 +47,7 @@ public class GameStateTest {
 
         /** For same random grid configs */
 
-        final int nrOfTests = 1000;
+        final int nrOfTests = 1000000;
         final Random random = new Random();
 
         for (int test = 0; test < nrOfTests; test++) {
@@ -115,6 +115,11 @@ public class GameStateTest {
             if (state1.equals(state2)) {
                 test--;
                 continue;
+            }
+
+            if (state1.hashCode() == state2.hashCode())   {
+                System.out.println(TUI.prettyPrint(state1));
+                System.out.println(TUI.prettyPrint(state2));
             }
 
             Assert.assertNotEquals(state1.hashCode(), state2.hashCode());

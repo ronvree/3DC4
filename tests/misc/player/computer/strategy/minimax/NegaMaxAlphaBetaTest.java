@@ -26,7 +26,7 @@ import java.util.Random;
  */
 public class NegaMaxAlphaBetaTest {
 
-    private static final int DEPTH = 6;
+    private static final int DEPTH = 4;
 
     private static final int STATES = 50;
 
@@ -65,6 +65,10 @@ public class NegaMaxAlphaBetaTest {
                 } else {
                     MoveInput m = (MoveInput) p2.decide(state);
                     state.doMove(new Move(playing, m.getX(), m.getY()));
+                }
+                if (state.lastMoveWasWinning()) {
+                    turn--;
+                    continue;
                 }
                 playing = playing.other();
             }

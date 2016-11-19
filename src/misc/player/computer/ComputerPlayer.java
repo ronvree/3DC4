@@ -2,7 +2,6 @@ package misc.player.computer;
 
 import misc.Color;
 import misc.GameState;
-import misc.Grid;
 import misc.player.Player;
 import misc.player.human.input.PlayerInput;
 import misc.player.computer.strategy.Strategy;

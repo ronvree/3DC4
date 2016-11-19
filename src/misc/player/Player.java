@@ -2,7 +2,6 @@ package misc.player;
 
 import misc.Color;
 import misc.GameState;
-import misc.Grid;
 import misc.player.human.input.PlayerInput;
 
 /**
