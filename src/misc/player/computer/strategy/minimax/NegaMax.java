@@ -11,16 +11,8 @@ import java.util.List;
  */
 public abstract class NegaMax implements Strategy {
 
-    /**
-     * Constants
-     */
-
     /** Score for winning game */
     protected static final int WIN = 10000;
-
-    /**
-     * Instance variables
-     */
 
     /** Color of maximizing player */
     private final Color maximizingColor;
@@ -28,10 +20,6 @@ public abstract class NegaMax implements Strategy {
     private int depth;
     /** Store best move globally */
     private Move bestMove;
-
-    /**
-     * Constructor
-     */
 
     /**
      * Create a new negamax strategy
@@ -42,10 +30,6 @@ public abstract class NegaMax implements Strategy {
     }
 
     /**
-     * Abstract methods
-     */
-
-    /**
      * Give a score to this grid
      */
     protected abstract int score(GameState state, Color color);
@@ -54,10 +38,6 @@ public abstract class NegaMax implements Strategy {
      * Option to explore certain moves first
      */
     protected abstract void orderMoves(List<Move> moves);
-
-    /**
-     * Methods
-     */
 
     /**
      * Run the negamax algorithm to determine the best move

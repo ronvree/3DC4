@@ -36,7 +36,6 @@ public abstract class NegaMaxAlphaBeta extends NegaMax {
         if (state.lastMoveWasWinning()) {
             return c * WIN;
         }
-
         if (depth == 0 || state.gridIsFull()) {
             return score(state, color);
         }

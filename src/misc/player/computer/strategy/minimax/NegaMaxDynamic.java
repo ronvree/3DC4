@@ -107,52 +107,6 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
     }
 
     /**
-     function negamax(node, depth, α, β, color)
-     alphaOrig := α
-
-     // Transposition Table Lookup; node is the lookup key for ttEntry
-     ttEntry := TranspositionTableLookup( node )
-     if ttEntry is valid and ttEntry.depth ≥ depth
-         if ttEntry.Flag = EXACT
-            return ttEntry.Value
-         else if ttEntry.Flag = LOWERBOUND
-            α := max( α, ttEntry.Value)
-         else if ttEntry.Flag = UPPERBOUND
-            β := min( β, ttEntry.Value)
-         endif
-         if α ≥ β
-            return ttEntry.Value
-     endif
-
-     if depth = 0 or node is a terminal node
-        return color * the heuristic value of node
-
-     bestValue := -∞
-     childNodes := GenerateMoves(node)
-     childNodes := OrderMoves(childNodes)
-     foreach child in childNodes
-        v := -negamax(child, depth - 1, -β, -α, -color)
-        bestValue := max( bestValue, v )
-        α := max( α, v )
-        if α ≥ β
-            break
-
-     // Transposition Table Store; node is the lookup key for ttEntry
-     ttEntry.Value := bestValue
-     if bestValue ≤ alphaOrig
-        ttEntry.Flag := UPPERBOUND
-     else if bestValue ≥ β
-        ttEntry.Flag := LOWERBOUND
-     else
-        ttEntry.Flag := EXACT
-     endif
-     ttEntry.depth := depth
-     TranspositionTableStore( node, ttEntry )
-
-     return bestValue
-     */
-
-    /**
      * Data structure for storing evaluated moves
      */
     private class TableEntry { // TODO

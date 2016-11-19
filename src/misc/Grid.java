@@ -280,7 +280,7 @@ public final class Grid {
         final int x;
         final int y;
 
-        public FullColumnException(int x, int y) {
+        FullColumnException(int x, int y) {
             this.x = x;
             this.y = y;
         }
@@ -300,7 +300,7 @@ public final class Grid {
 
         private int[] coordinates;
 
-        public InvalidCoordinatesException(int... coordinates) {
+        InvalidCoordinatesException(int... coordinates) {
             this.coordinates = coordinates;
         }
 
