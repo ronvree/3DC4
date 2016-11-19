@@ -2,6 +2,7 @@ package misc.testing;
 
 import misc.Color;
 import misc.GameState;
+import misc.Grid;
 import misc.Move;
 import misc.player.computer.strategy.minimax.NegaMaxDynamic;
 

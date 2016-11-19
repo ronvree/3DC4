@@ -90,7 +90,7 @@ public class GameState {
 
     public GameState() {
         this.moves = new Stack<>();
-        this.grid = new ComplexGrid();
+        this.grid = new Grid();
     }
 
     /**

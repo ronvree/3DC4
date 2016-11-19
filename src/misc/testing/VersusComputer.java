@@ -15,7 +15,7 @@ public class VersusComputer {
 
         HumanPlayer p1 = new HumanPlayer("Henk", Color.RED);
 
-        ComputerPlayer p2 = new ComputerPlayer("Bert", Color.YELLOW, new NegaMaxAlphaBetaTestVersion(2, Color.YELLOW)) {
+        ComputerPlayer p2 = new ComputerPlayer("Bert", Color.YELLOW, new NegaMaxDynamicTestVersion(20, Color.YELLOW)) {
             @Override
             public boolean acceptDraw(GameState state) {
                 return false;

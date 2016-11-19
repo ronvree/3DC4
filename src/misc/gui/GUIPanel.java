@@ -1,6 +1,7 @@
 package misc.gui;
 
 import misc.GameState;
+import misc.Grid;
 
 import javax.swing.*;
 import java.awt.*;

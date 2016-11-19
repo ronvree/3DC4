@@ -1,6 +1,7 @@
 package misc.player.computer.strategy;
 
 import misc.GameState;
+import misc.Grid;
 import misc.player.human.input.MoveInput;
 
 import java.util.Random;
