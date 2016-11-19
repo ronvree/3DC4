@@ -31,7 +31,7 @@ public class Move {
 
     @Override
     public String toString() {
-        return String.format("%s dropped a piece in %d, %d", color.toString(), x, y);
+        return String.format("%s in %d, %d", color.toString(), x, y);
     }
 
     /**

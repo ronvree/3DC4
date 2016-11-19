@@ -72,13 +72,14 @@ public class NegaMaxDynamicTest {
 
     @Test
     public void testDecisionEquality() throws Exception {
+        System.out.println("Comparing decisions...");
         for (GameState state : gameStates) {
             MoveInput m1 = (MoveInput) alphaBetaNega.decide(state);
             MoveInput m2 = (MoveInput) dynamicNega.decide(state);
             Assert.assertEquals(m1, m2);
-            System.out.println(".");
+            System.out.print(".");
         }
-        System.out.println("\n");
+        System.out.println("\nFinished comparing decisions");
     }
 
     /**

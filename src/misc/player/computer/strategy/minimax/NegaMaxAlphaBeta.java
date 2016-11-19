@@ -24,20 +24,20 @@ public abstract class NegaMaxAlphaBeta extends NegaMax {
     @Override
     public MoveInput determineMove(GameState state) {
         this.setBestMove(null);
-        negamaxAlphaBeta(state, this.getDepth(), this.getMaximizingColor(), -Integer.MAX_VALUE, Integer.MAX_VALUE, 1);
+        negamaxAlphaBeta(state, this.getDepth(), this.getMaximizingColor(), -Integer.MAX_VALUE, Integer.MAX_VALUE);
         return new MoveInput(getBestMove().getX(), getBestMove().getY());
     }
 
     /**
      * Negamax algorithm
      */
-    private int negamaxAlphaBeta(GameState state, int depth, Color color, int alpha, int beta, int c) {
+    private int negamaxAlphaBeta(GameState state, int depth, Color color, int alpha, int beta) {
         /** Check base cases */
         if (state.lastMoveWasWinning()) {
-            return c * WIN;
+            return (color == this.getMaximizingColor()? -1:1) * WIN;
         }
         if (depth == 0 || state.gridIsFull()) {
-            return score(state, color);
+            return (color == this.getMaximizingColor()? 1:-1) * score(state, this.getMaximizingColor());
         }
         /** Generate move options */
         List<Move> moveOptions = Strategy.generatePossibleMoves(state, color);
@@ -49,7 +49,7 @@ public abstract class NegaMaxAlphaBeta extends NegaMax {
             /** Apply move */
             state.doMove(move);
             /** Determine score */
-            int score = -negamaxAlphaBeta(state, depth - 1, color.other(), -beta, -alpha, -c);
+            int score = -negamaxAlphaBeta(state, depth - 1, color.other(), -beta, -alpha);
             /** Compare with previous results */
             if (bestScore < score) {
                 bestScore = score;

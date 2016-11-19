@@ -1,21 +1,22 @@
 package misc;
 
-import misc.player.computer.ComputerPlayer;
 import misc.player.computer.NaivePlayer;
-import misc.player.computer.strategy.Strategy;
 import misc.player.human.input.MoveInput;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Random;
 
-import static org.junit.Assert.*;
-
 /**
  *
  */
 public class GameStateTest {
 
+
+    @Test
+    public void testWinCheck() throws Exception {
+        // TODO
+    }
 
     /**
      * Test if grid configurations produce unique hashes
@@ -47,7 +48,7 @@ public class GameStateTest {
 
         /** For same random grid configs */
 
-        final int nrOfTests = 1000000;
+        final int nrOfTests = 10000; // Note: a LOT of tests (millions) need to be run to find a reliable hash function
         final Random random = new Random();
 
         for (int test = 0; test < nrOfTests; test++) {
@@ -115,11 +116,6 @@ public class GameStateTest {
             if (state1.equals(state2)) {
                 test--;
                 continue;
-            }
-
-            if (state1.hashCode() == state2.hashCode())   {
-                System.out.println(TUI.prettyPrint(state1));
-                System.out.println(TUI.prettyPrint(state2));
             }
 
             Assert.assertNotEquals(state1.hashCode(), state2.hashCode());

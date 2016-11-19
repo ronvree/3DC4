@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class NegaMax implements Strategy {
 
     /** Score for winning game */
-    protected static final int WIN = 10000;
+    static final int WIN = 10000;
 
     /** Color of maximizing player */
     private final Color maximizingColor;
@@ -45,20 +45,20 @@ public abstract class NegaMax implements Strategy {
     @Override
     public MoveInput determineMove(GameState state) {
         this.setBestMove(null);
-        negamax(state, this.depth, this.maximizingColor, 1);
+        negamax(state, this.depth, this.maximizingColor);
         return new MoveInput(bestMove.getX(), bestMove.getY());
     }
 
     /**
      * Negamax algorithm
      */
-    private int negamax(GameState state, int depth, Color color, int c)   {
+    private int negamax(GameState state, int depth, Color color)   {
         /** Check base cases */
         if (state.lastMoveWasWinning()) {
-            return c * WIN;
+            return (color == this.maximizingColor? -1:1) * WIN;
         }
         if (depth == 0 || state.gridIsFull()) {
-            return score(state, color);
+            return (color == this.maximizingColor? 1:-1) * score(state, this.maximizingColor);
         }
         /** Generate move options */
         List<Move> moveOptions = Strategy.generatePossibleMoves(state, color);
@@ -70,7 +70,7 @@ public abstract class NegaMax implements Strategy {
             /** Apply move */
             state.doMove(move);
             /** Determine score */
-            int score = -negamax(state, depth - 1, color.other(), -c);
+            int score = -negamax(state, depth - 1, color.other());
             /** Compare with previous results */
             if (bestScore < score) {
                 bestScore = score;

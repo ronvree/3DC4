@@ -60,10 +60,10 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
         }
         /** Check base cases */
         if (state.lastMoveWasWinning()) {
-            return c * WIN;
+            return (color == this.getMaximizingColor()? -1:1) * WIN;
         }
         if (depth == 0 || state.gridIsFull()) {
-            return score(state, color);
+            return (color == this.getMaximizingColor()? 1:-1) * score(state, this.getMaximizingColor());
         }
         /** Generate move options */
         List<Move> moveOptions = Strategy.generatePossibleMoves(state, color);
