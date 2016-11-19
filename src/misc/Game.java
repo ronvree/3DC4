@@ -30,7 +30,7 @@ public class Game {
     /** The players */
     private final Player[] players;
     /** Object for keeping track of game progress */
-    private GameState state;
+    private final GameState state;
     /** Index of the player that has to make a move */
     private int currentPlayer;
     private GUI gui;

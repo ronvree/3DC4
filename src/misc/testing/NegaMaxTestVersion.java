@@ -30,7 +30,7 @@ public class NegaMaxTestVersion extends NegaMax {
      * Give a score to this grid. Slots closer to middle give more points
      */
     @Override
-    protected int score(GameState state, Color color) {
+    public int score(GameState state, Color color) {
         int score = 0;
         for (int x = 0; x < Grid.XRANGE; x++) {
             for (int y = 0; y < Grid.YRANGE; y++) {
@@ -48,7 +48,7 @@ public class NegaMaxTestVersion extends NegaMax {
     /**
      * Helper method of score(Grid grid)
      */
-    private int score(final int x, final int y, final int z) {
+    private static int score(final int x, final int y, final int z) {
         return HEURISTICS[x] + HEURISTICS[y] + HEURISTICS[z];
     }
 
@@ -56,20 +56,6 @@ public class NegaMaxTestVersion extends NegaMax {
      * Favor middle moves
      */
     @Override
-    protected void orderMoves(List<Move> moves) {
-//        moves.sort((m1, m2) -> {
-//
-//            int m1score = HEURISTICS[m1.getX()] + HEURISTICS[m1.getY()];
-//            int m2score = HEURISTICS[m2.getX()] + HEURISTICS[m2.getY()];
-//
-//            if (m1score > m2score) {
-//                return 1;
-//            }
-//            if (m1score < m2score) {
-//                return -1;
-//            }
-//            return 0;
-//        });
-    }
+    protected void orderMoves(List<Move> moves) {    }
 
 }

@@ -43,21 +43,21 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
      */
     private int negamaxDynamic(GameState state, int depth, Color color, int alpha, int beta, int c) {
         int alphaOrig = alpha;
+        /** Check if an equal game state has already been evaluated */
         TableEntry entry = tt.get(state.hashCode());
         if (entry != null && entry.getDepth() >= depth) {
             switch (entry.getFlag()) {
                 case TableEntry.EXACT:
                     return entry.getValue();
-                case TableEntry.LOWERBOUND:
+                case TableEntry.LOWER_BOUND:
                     alpha = Math.max(alpha, entry.getValue());
-                case TableEntry.UPPERBOUND:
+                case TableEntry.UPPER_BOUND:
                     beta = Math.min(beta, entry.getValue());
             }
             if (alpha >= beta) {
                 return entry.getValue();
             }
         }
-
         /** Check base cases */
         if (state.lastMoveWasWinning()) {
             return c * WIN;
@@ -65,7 +65,6 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
         if (depth == 0 || state.gridIsFull()) {
             return score(state, color);
         }
-
         /** Generate move options */
         List<Move> moveOptions = Strategy.generatePossibleMoves(state, color);
         /** Calculate order in which moves should be evaluated */
@@ -95,9 +94,9 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
         /** Store state */
         TableEntry newEntry;
         if (bestScore <= alphaOrig) {
-            newEntry = new TableEntry(TableEntry.UPPERBOUND, depth, bestScore);
+            newEntry = new TableEntry(TableEntry.UPPER_BOUND, depth, bestScore);
         } else if (bestScore >= beta) {
-            newEntry = new TableEntry(TableEntry.LOWERBOUND, depth, bestScore);
+            newEntry = new TableEntry(TableEntry.LOWER_BOUND, depth, bestScore);
         } else {
             newEntry = new TableEntry(TableEntry.EXACT, depth, bestScore);
         }
@@ -109,10 +108,10 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
     /**
      * Data structure for storing evaluated moves
      */
-    private class TableEntry { // TODO
+    private class TableEntry {
 
-        private static final int UPPERBOUND = 1;
-        private static final int LOWERBOUND = -1;
+        private static final int UPPER_BOUND = 1;
+        private static final int LOWER_BOUND = -1;
         private static final int EXACT = 0;
 
         private final int flag;

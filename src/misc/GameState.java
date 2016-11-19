@@ -5,7 +5,7 @@ import java.util.Stack;
 /**
  * Keeps track of game progression
  */
-public class GameState {
+public final class GameState {
 
     /**
      * Direction vectors for connect-check
@@ -80,9 +80,12 @@ public class GameState {
      */
 
     /** Stores all moves that have been done */
-    private Stack<MoveEntry> moves;
+    private final Stack<Move> moves;
+    /** Stores all resulting z coordinates of each move */
+    private final Stack<Integer> zs;
+
     /** Grid for keeping track of piece locations */
-    private Grid grid;
+    private final Grid grid;
 
     /**
      * Constructor
@@ -90,6 +93,7 @@ public class GameState {
 
     public GameState() {
         this.moves = new Stack<>();
+        this.zs = new Stack<>();
         this.grid = new Grid();
     }
 
@@ -121,8 +125,8 @@ public class GameState {
      */
     public GameState deepCopy() {
         GameState copy = new GameState();
-        for (MoveEntry moveEntry : moves.subList(0, moves.size())) {
-            copy.doMove(moveEntry.getMove());
+        for (Move moveEntry : moves.subList(0, moves.size())) {
+            copy.doMove(moveEntry);
         }
         return copy;
     }
@@ -133,10 +137,11 @@ public class GameState {
     public boolean lastMoveWasWinning() {
         /** Get the last move that has been executed */
         if (moves.size() > 0) {
-            MoveEntry last = moves.peek();
-            final Color color = last.getMove().getColor();
+            Move last = moves.peek();
+            int z = zs.peek();
+            final Color color = last.getColor();
             /** Get the location that should be checked */
-            final int[] origin = new int[]{last.getMove().getX(), last.getMove().getY(), last.getZ()};
+            final int[] origin = new int[]{last.getX(), last.getY(), z};
             /** Check all axes for chains */
             for (int[][] axis : axes) {
                 int[] direction1 = axis[0];
@@ -209,7 +214,8 @@ public class GameState {
     public boolean doMove(Move move) {
         try {
             int z = grid.drop(move);
-            this.moves.push(new MoveEntry(move, z));
+            this.moves.push(move);
+            this.zs.push(z);
         } catch (Grid.FullColumnException | Grid.InvalidCoordinatesException e) {
             return false;
         }
@@ -220,13 +226,13 @@ public class GameState {
      * Undo the last move that has been made
      */
     public void undoMove() {
-        Move last = moves.pop().getMove();
+        Move last = moves.pop();
+        zs.pop();
         try {
             grid.undo(last.getX(), last.getY());
         } catch (Grid.EmptyColumnException | Grid.InvalidCoordinatesException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -242,40 +248,13 @@ public class GameState {
 
         GameState gameState = (GameState) o;
 
-        return grid != null ? grid.equals(gameState.grid) : gameState.grid == null;
+        return grid.equals(gameState.grid);
 
     }
 
     @Override
     public int hashCode() {
         return grid.hashCode();
-    }
-
-    /**
-     * Class for storing move information
-     */
-
-    private class MoveEntry {
-
-        /** The move object indicating which color put a piece in which column */
-        private final Move move;
-        /** The z coordinate where the piece landed */
-        private final int z;
-
-        private MoveEntry(Move move, int z) {
-            this.move = move;
-            this.z = z;
-        }
-
-        private Move getMove() {
-            return move;
-        }
-
-        private int getZ() {
-            return z;
-        }
-
-
     }
 
 
