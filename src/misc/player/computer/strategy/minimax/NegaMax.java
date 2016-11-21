@@ -55,10 +55,10 @@ public abstract class NegaMax implements Strategy {
     private int negamax(GameState state, int depth, Color color)   {
         /** Check base cases */
         if (state.lastMoveWasWinning()) {
-            return (color == this.maximizingColor? -1:1) * WIN;
+            return -WIN;
         }
         if (depth == 0 || state.gridIsFull()) {
-            return (color == this.maximizingColor? 1:-1) * score(state, this.maximizingColor);
+            return score(state, color);
         }
         /** Generate move options */
         List<Move> moveOptions = Strategy.generatePossibleMoves(state, color);

@@ -33,7 +33,8 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
     @Override
     public MoveInput determineMove(GameState state) {
         this.setBestMove(null);
-        negamaxDynamic(state, this.getDepth(), this.getMaximizingColor(), -Integer.MAX_VALUE, Integer.MAX_VALUE, 1);
+        int score = negamaxDynamic(state, this.getDepth(), this.getMaximizingColor(), -Integer.MAX_VALUE, Integer.MAX_VALUE);
+        System.out.printf("Rated %s as %d\n\r", getBestMove().toString(), score);
         tt.clear();
         return new MoveInput(getBestMove().getX(), getBestMove().getY());
     }
@@ -41,18 +42,17 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
     /**
      * Negamax algorithm
      */
-    private int negamaxDynamic(GameState state, int depth, Color color, int alpha, int beta, int c) {
+    private int negamaxDynamic(GameState state, int depth, Color color, int alpha, int beta) {
         int alphaOrig = alpha;
         /** Check if an equal game state has already been evaluated */
         TableEntry entry = tt.get(state.hashCode());
         if (entry != null && entry.getDepth() >= depth) {
-            switch (entry.getFlag()) {
-                case TableEntry.EXACT:
-                    return entry.getValue();
-                case TableEntry.LOWER_BOUND:
-                    alpha = Math.max(alpha, entry.getValue());
-                case TableEntry.UPPER_BOUND:
-                    beta = Math.min(beta, entry.getValue());
+            if (entry.getFlag() == TableEntry.EXACT) {
+                return entry.getValue();
+            } else if (entry.getFlag() == TableEntry.LOWER_BOUND) {
+                alpha = Math.max(alpha, entry.getValue());
+            } else if (entry.getFlag() == TableEntry.UPPER_BOUND) {
+                beta = Math.min(beta, entry.getValue());
             }
             if (alpha >= beta) {
                 return entry.getValue();
@@ -60,10 +60,10 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
         }
         /** Check base cases */
         if (state.lastMoveWasWinning()) {
-            return (color == this.getMaximizingColor()? -1:1) * WIN;
+            return -WIN;
         }
         if (depth == 0 || state.gridIsFull()) {
-            return (color == this.getMaximizingColor()? 1:-1) * score(state, this.getMaximizingColor());
+            return score(state, color);
         }
         /** Generate move options */
         List<Move> moveOptions = Strategy.generatePossibleMoves(state, color);
@@ -75,7 +75,7 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
             /** Apply move */
             state.doMove(move);
             /** Determine score */
-            int score = -negamaxDynamic(state, depth - 1, color.other(), -beta, -alpha, -c);
+            int score = -negamaxDynamic(state, depth - 1, color.other(), -beta, -alpha);
             /** Compare with previous results */
             if (bestScore < score) {
                 bestScore = score;

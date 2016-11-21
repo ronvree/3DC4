@@ -20,7 +20,7 @@ import java.util.Random;
  */
 public class NegaMaxDynamicTest {
 
-    private static final int DEPTH = 8;
+    private static final int DEPTH = 7;
 
     private static final int STATES = 50;
 
@@ -62,6 +62,7 @@ public class NegaMaxDynamicTest {
                 }
                 if (state.lastMoveWasWinning()) {
                     turn--;
+                    state.undoMove();
                     continue;
                 }
                 playing = playing.other();
@@ -73,11 +74,13 @@ public class NegaMaxDynamicTest {
     @Test
     public void testDecisionEquality() throws Exception {
         System.out.println("Comparing decisions...");
+        int i = 0;
         for (GameState state : gameStates) {
             MoveInput m1 = (MoveInput) alphaBetaNega.decide(state);
             MoveInput m2 = (MoveInput) dynamicNega.decide(state);
-            Assert.assertEquals(m1, m2);
-            System.out.print(".");
+
+            Assert.assertEquals("\n" + TUI.prettyPrint(state), m1, m2);
+            System.out.println(String.format("%d/%d passed", ++i, STATES));
         }
         System.out.println("\nFinished comparing decisions");
     }
