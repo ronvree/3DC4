@@ -44,8 +44,8 @@ public abstract class NegaMax implements Strategy {
      */
     @Override
     public MoveInput determineMove(GameState state) {
-        this.setBestMove(null);
-        negamax(state, this.depth, this.maximizingColor);
+        setBestMove(null);
+        negamax(state, depth, maximizingColor);
         return new MoveInput(bestMove.getX(), bestMove.getY());
     }
 

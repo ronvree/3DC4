@@ -23,9 +23,8 @@ public abstract class NegaMaxAlphaBeta extends NegaMax {
      */
     @Override
     public MoveInput determineMove(GameState state) {
-        this.setBestMove(null);
-        int score = negamaxAlphaBeta(state, this.getDepth(), this.getMaximizingColor(), -Integer.MAX_VALUE, Integer.MAX_VALUE);
-        System.out.printf("Rated %s as %d\n\r", getBestMove().toString(), score);
+        setBestMove(null);
+        negamaxAlphaBeta(state, getDepth(), getMaximizingColor(), -Integer.MAX_VALUE, Integer.MAX_VALUE);
         return new MoveInput(getBestMove().getX(), getBestMove().getY());
     }
 
@@ -54,8 +53,8 @@ public abstract class NegaMaxAlphaBeta extends NegaMax {
             /** Compare with previous results */
             if (bestScore < score) {
                 bestScore = score;
-                if (depth == this.getDepth()) {
-                    this.setBestMove(move);
+                if (depth == getDepth()) {
+                    setBestMove(move);
                 }
             }
             /** Undo move for reuse of grid */
