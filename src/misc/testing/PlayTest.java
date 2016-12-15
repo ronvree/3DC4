@@ -16,23 +16,7 @@ public class PlayTest {
         HumanPlayer p1 = new HumanPlayer("Henk", Color.RED);
         HumanPlayer p2 = new HumanPlayer("Toos", Color.YELLOW);
 
-//        ComputerPlayer c1 = new ComputerPlayer("Bert", Color.RED, new NegaMaxAlphaBetaTestVersion(8, Color.RED)) {
-        ComputerPlayer c1 = new ComputerPlayer("Bert", Color.RED, new NegaMaxDynamicTestVersion(15, Color.RED)) {
-            @Override
-            public boolean acceptDraw(GameState state) {
-                return false;
-            }
-        };
-//        ComputerPlayer c2 = new ComputerPlayer("Ernie", Color.YELLOW, new NegaMaxAlphaBetaTestVersion(8, Color.YELLOW)) {
-        ComputerPlayer c2 = new ComputerPlayer("Ernie", Color.YELLOW, new NegaMaxDynamicTestVersion(15, Color.YELLOW)) {
-            @Override
-            public boolean acceptDraw(GameState state) {
-                return false;
-            }
-        };
-
-//        Game game = new Game(p1, p2);
-        Game game = new Game(c1, c2);
+        Game game = new Game(p1, p2);
 
         game.play();
 

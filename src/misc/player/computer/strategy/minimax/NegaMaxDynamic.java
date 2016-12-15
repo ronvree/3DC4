@@ -65,14 +65,14 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
             return score(state, color);
         }
         /** Generate move options */
-        List<Move> moveOptions = Strategy.generatePossibleMoves(state, color);
+        List<MoveSuggestion> moveOptions = Strategy.generatePossibleMoves(state, color);
         /** Calculate order in which moves should be evaluated */
         orderMoves(moveOptions);
         /** Evaluate all possible moves. Minimize loss for maximal result */
         int bestScore = Integer.MIN_VALUE;
-        for (Move move : moveOptions) {
+        for (MoveSuggestion move : moveOptions) {
             /** Apply move */
-            state.doMove(move);
+            state.doMove(move.getColor(), move.getX(), move.getY());
             /** Determine score */
             int score = -negamaxDynamic(state, depth - 1, color.other(), -beta, -alpha);
             /** Compare with previous results */
@@ -107,7 +107,7 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
     /**
      * Data structure for storing evaluated moves
      */
-    private class TableEntry {
+    private final class TableEntry {
 
         private static final int UPPER_BOUND = 1;
         private static final int LOWER_BOUND = -1;

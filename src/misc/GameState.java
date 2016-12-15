@@ -1,11 +1,13 @@
 package misc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
  * Keeps track of game progression
  */
-public final class GameState {
+public class GameState {
 
     /**
      * Direction vectors for connect-check
@@ -81,8 +83,6 @@ public final class GameState {
 
     /** Stores all moves that have been done */
     private final Stack<Move> moves;
-    /** Stores all resulting z coordinates of each move */
-    private final Stack<Integer> zs;
 
     /** Grid for keeping track of piece locations */
     private final Grid grid;
@@ -93,7 +93,6 @@ public final class GameState {
 
     public GameState() {
         this.moves = new Stack<>();
-        this.zs = new Stack<>();
         this.grid = new Grid();
     }
 
@@ -104,14 +103,14 @@ public final class GameState {
     /**
      * Check if the grid is full
      */
-    public boolean gridIsFull() {
+    public final boolean gridIsFull() {
         return grid.isFull();
     }
 
     /**
      * Get the color that occupies this coordinate
      */
-    public Color occupiedBy(int x, int y, int z) {
+    public final Color colorOccupying(int x, int y, int z) {
         try {
             return grid.occupiedBy(x, y, z);
         } catch (Grid.InvalidCoordinatesException e) {
@@ -126,22 +125,54 @@ public final class GameState {
     public GameState deepCopy() {
         GameState copy = new GameState();
         for (Move moveEntry : moves.subList(0, moves.size())) {
-            copy.doMove(moveEntry);
+            copy.doMove(moveEntry.getColor(), moveEntry.getX(), moveEntry.getY());
         }
         return copy;
     }
 
     /**
+     * Get all moves that have been performed
+     */
+    public List<Move> getMoves() {
+        if (moves.size() > 0) {
+            return moves.subList(0, moves.size());
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Get all moves that have been performed with the specified color
+     */
+    public List<Move> getMoves(Color color) {
+        List<Move> result = new ArrayList<>();
+        for (int i = color == Color.RED? 0:1; i < moves.size(); i+=2) {
+            result.add(moves.get(i));
+        }
+        return result;
+    }
+
+    /**
+     * Get the last move that was done on the grid
+     */
+    public Move getLastMove() {
+        if (moves.size() > 0) {
+            return moves.peek();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Check if the last move that has been made won the game (by getting a chain of the required length)
      */
-    public boolean lastMoveWasWinning() {
+    public final boolean lastMoveWasWinning() {
         /** Get the last move that has been executed */
         if (moves.size() > 0) {
             Move last = moves.peek();
-            int z = zs.peek();
             final Color color = last.getColor();
             /** Get the location that should be checked */
-            final int[] origin = new int[]{last.getX(), last.getY(), z};
+            final int[] origin = new int[]{last.getX(), last.getY(), last.getZ()};
             /** Check all axes for chains */
             for (int[][] axis : axes) {
                 int[] direction1 = axis[0];
@@ -209,13 +240,11 @@ public final class GameState {
 
     /**
      * Perform a move on the grid. Return a boolean indicating if the move was successful
-     * @param move -- Move to be performed
      */
-    public boolean doMove(Move move) {
+    public boolean doMove(Color color, int x, int y) {
         try {
-            int z = grid.drop(move);
-            this.moves.push(move);
-            this.zs.push(z);
+            int z = grid.drop(color, x, y);
+            this.moves.push(new Move(color, x, y, z));
         } catch (Grid.FullColumnException | Grid.InvalidCoordinatesException e) {
             return false;
         }
@@ -227,7 +256,6 @@ public final class GameState {
      */
     public void undoMove() {
         Move last = moves.pop();
-        zs.pop();
         try {
             grid.undo(last.getX(), last.getY());
         } catch (Grid.EmptyColumnException | Grid.InvalidCoordinatesException e) {
@@ -242,7 +270,7 @@ public final class GameState {
      */
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -253,7 +281,7 @@ public final class GameState {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return grid.hashCode();
     }
 

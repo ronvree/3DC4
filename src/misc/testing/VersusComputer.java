@@ -14,17 +14,12 @@ public class VersusComputer {
 
     public static void main(String[] args) {
 
-//        HumanPlayer p1 = new HumanPlayer("Henk", Color.RED);
-//
-//        ComputerPlayer p2 = new ComputerPlayer("Bert", Color.YELLOW, new NegaPlayer(8, Color.YELLOW)) {
-//            @Override
-//            public boolean acceptDraw(GameState state) {
-//                return false;
-//            }
-//        };
-//
-//        Game game = new Game(p1, p2);
-//        game.play();
+        HumanPlayer p1 = new HumanPlayer("Henk", Color.RED);
+
+        ComputerPlayer p2 = new NegaPlayer(Color.YELLOW, 8);
+
+        Game game = new Game(p1, p2);
+        game.play();
 
     }
 

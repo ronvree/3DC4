@@ -159,13 +159,6 @@ public final class Grid {
     }
 
     /**
-     * Execute this move. Return the z coordinate in which the piece landed
-     */
-    public int drop(Move move) throws FullColumnException, InvalidCoordinatesException {
-        return drop(move.getColor(), move.getX(), move.getY());
-    }
-
-    /**
      * Undo the last move made in this column. Return a boolean indicating if a move has been undone
      * @param x -- Column x coordinate
      * @param y -- Column y coordinate
@@ -275,7 +268,7 @@ public final class Grid {
     /**
      * Exception that indicates a column is full
      */
-    class FullColumnException extends Exception {
+    public class FullColumnException extends Exception {
 
         final int x;
         final int y;
@@ -296,7 +289,7 @@ public final class Grid {
      * Exception that indicates invalid coordinates have been given
      */
 
-    class InvalidCoordinatesException extends Exception {
+    public class InvalidCoordinatesException extends Exception {
 
         private int[] coordinates;
 

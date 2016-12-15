@@ -33,16 +33,16 @@ public class GameStateTest {
 
         /** After one move */
 
-        final Move move = new Move(Color.RED, Grid.XRANGE/2, Grid.YRANGE/2);
-        state1.doMove(move);
-        state2.doMove(move);
+        final MoveSuggestion move = new MoveSuggestion(Color.RED, Grid.XRANGE/2, Grid.YRANGE/2);
+        state1.doMove(move.getColor(), move.getX(), move.getY());
+        state2.doMove(move.getColor(), move.getX(), move.getY());
 
         Assert.assertEquals(state1.hashCode(), state2.hashCode());
 
         /** After moves are undone */
 
         state1.undoMove();
-        state1.doMove(move);
+        state1.doMove(move.getColor(), move.getX(), move.getY());
 
         Assert.assertEquals(state1.hashCode(), state2.hashCode());
 
@@ -59,17 +59,17 @@ public class GameStateTest {
             Color current = Color.RED;
             int numberOfMoves = random.nextInt(Grid.XRANGE * Grid.YRANGE * Grid.ZRANGE - 1);
             for (int moveIndex = 0; moveIndex < numberOfMoves; moveIndex++) {
-                Move decision;
+                MoveSuggestion decision;
                 MoveInput input;
                 if (current == Color.RED) {
                     input = (MoveInput) red.decide(state1);
-                    decision = new Move(Color.RED, input.getX(), input.getY());
+                    decision = new MoveSuggestion(Color.RED, input.getX(), input.getY());
                 } else {
                     input = (MoveInput) yel.decide(state1);
-                    decision = new Move(Color.YELLOW, input.getX(), input.getY());
+                    decision = new MoveSuggestion(Color.YELLOW, input.getX(), input.getY());
                 }
-                state1.doMove(decision);
-                state2.doMove(decision);
+                state1.doMove(decision.getColor(), decision.getX(), decision.getY());
+                state2.doMove(decision.getColor(), decision.getX(), decision.getY());
                 current = current.other();
             }
             Assert.assertEquals(state1.hashCode(), state2.hashCode());
@@ -85,21 +85,21 @@ public class GameStateTest {
             Color current = Color.RED;
             int numberOfMoves = random.nextInt(Grid.XRANGE * Grid.YRANGE * Grid.ZRANGE - 1);
             for (int moveIndex = 0; moveIndex < numberOfMoves; moveIndex++) {
-                Move decision1;
-                Move decision2;
+                MoveSuggestion decision1;
+                MoveSuggestion decision2;
                 MoveInput input1;
                 MoveInput input2;
 
                 if (current == Color.RED) {
                     input1 = (MoveInput) red.decide(state1);
                     input2 = (MoveInput) red.decide(state1);
-                    decision1 = new Move(Color.RED, input1.getX(), input1.getY());
-                    decision2 = new Move(Color.RED, input2.getX(), input2.getY());
+                    decision1 = new MoveSuggestion(Color.RED, input1.getX(), input1.getY());
+                    decision2 = new MoveSuggestion(Color.RED, input2.getX(), input2.getY());
                 } else {
                     input1 = (MoveInput) yel.decide(state1);
                     input2 = (MoveInput) yel.decide(state1);
-                    decision1 = new Move(Color.YELLOW, input1.getX(), input1.getY());
-                    decision2 = new Move(Color.YELLOW, input2.getX(), input2.getY());
+                    decision1 = new MoveSuggestion(Color.YELLOW, input1.getX(), input1.getY());
+                    decision2 = new MoveSuggestion(Color.YELLOW, input2.getX(), input2.getY());
                 }
 
                 if (decision1.equals(decision2)) {
@@ -107,8 +107,8 @@ public class GameStateTest {
                     continue;
                 }
 
-                state1.doMove(decision1);
-                state2.doMove(decision2);
+                state1.doMove(decision1.getColor(), decision1.getX(), decision1.getY());
+                state2.doMove(decision2.getColor(), decision2.getX(), decision2.getY());
 
                 current = current.other();
             }

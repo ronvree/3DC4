@@ -1,9 +1,6 @@
 package misc.player.computer.strategy;
 
-import misc.Color;
-import misc.GameState;
-import misc.Grid;
-import misc.Move;
+import misc.*;
 import misc.player.human.input.MoveInput;
 
 import java.util.ArrayList;
@@ -17,12 +14,12 @@ public interface Strategy {
     /**
      * Obtains all moves that are possible
      */
-    static List<Move> generatePossibleMoves(GameState state, Color color) {
-        ArrayList<Move> moves = new ArrayList<>();
+    static List<MoveSuggestion> generatePossibleMoves(GameState state, Color color) {
+        ArrayList<MoveSuggestion> moves = new ArrayList<>();
         for (int x = 0; x < Grid.XRANGE; x++) {
             for (int y = 0; y < Grid.YRANGE; y++) {
-                if (state.occupiedBy(x, y, Grid.ZRANGE - 1) == null) {
-                    moves.add(new Move(color, x, y));
+                if (state.colorOccupying(x, y, Grid.ZRANGE - 1) == null) {
+                    moves.add(new MoveSuggestion(color, x, y));
                 }
             }
         }

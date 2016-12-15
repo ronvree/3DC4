@@ -11,20 +11,27 @@ public class Move {
     private final int x;
     /** y-coordinate of the column in which the piece was dropped */
     private final int y;
+    /** z-coordinate in which the piece landed */
+    private final int z;
 
     /**
      * Create a new move
      */
-    public Move(Color color, int x, int y) {
+    public Move(Color color, int x, int y, int z) {
         this.color = color;
         this.x = x;
         this.y = y;
+        this.z = z;
     }
 
     @Override
     public boolean equals(Object object) {
         if (object instanceof Move) {
-            return ((Move) object).getX() == this.getX() && ((Move) object).getY() == this.getY() && ((Move) object).getColor().equals(this.color);
+            boolean sameX = ((Move) object).getX() == this.getX();
+            boolean sameY = ((Move) object).getY() == this.getY();
+            boolean sameZ = ((Move) object).getZ() == this.getZ();
+            boolean sameColor = ((Move) object).getColor().equals(this.color);
+            return sameX && sameY && sameZ && sameColor;
         }
         return false;
     }
@@ -41,5 +48,6 @@ public class Move {
     public Color getColor() { return color; }
     public int getX() { return x; }
     public int getY() { return y; }
+    public int getZ() { return z; }
 
 }

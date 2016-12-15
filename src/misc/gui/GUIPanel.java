@@ -29,10 +29,10 @@ public class GUIPanel extends JPanel {
                     int yrect = 550 - (140*y) - (32*z);
                     int width = 100 - (16*z);
                     int height = 30;
-                    if (gameState.occupiedBy(x,y,z) == misc.Color.RED){
+                    if (gameState.colorOccupying(x,y,z) == misc.Color.RED){
                         gc.setColor(Color.RED);
                         gc.fillRect(xrect,yrect,width,height);
-                    } else if (gameState.occupiedBy(x,y,z) == misc.Color.YELLOW){
+                    } else if (gameState.colorOccupying(x,y,z) == misc.Color.YELLOW){
                         gc.setColor(Color.YELLOW);
                         gc.fillRect(xrect,yrect,width,height);
                     }

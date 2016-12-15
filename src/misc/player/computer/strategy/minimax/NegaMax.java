@@ -19,7 +19,7 @@ public abstract class NegaMax implements Strategy {
     /** How many moves this strategy will look ahead */
     private int depth;
     /** Store best move globally */
-    private Move bestMove;
+    private MoveSuggestion bestMove;
 
     /**
      * Create a new negamax strategy
@@ -37,7 +37,7 @@ public abstract class NegaMax implements Strategy {
     /**
      * Option to explore certain moves first
      */
-    protected abstract void orderMoves(List<Move> moves);
+    protected abstract void orderMoves(List<MoveSuggestion> moves);
 
     /**
      * Run the negamax algorithm to determine the best move
@@ -61,14 +61,14 @@ public abstract class NegaMax implements Strategy {
             return score(state, color);
         }
         /** Generate move options */
-        List<Move> moveOptions = Strategy.generatePossibleMoves(state, color);
+        List<MoveSuggestion> moveOptions = Strategy.generatePossibleMoves(state, color);
         /** Calculate order in which moves should be evaluated */
         orderMoves(moveOptions);
         /** Evaluate all possible moves. Minimize loss for maximal result */
         int bestScore = Integer.MIN_VALUE;
-        for (Move move : moveOptions) {
+        for (MoveSuggestion move : moveOptions) {
             /** Apply move */
-            state.doMove(move);
+            state.doMove(move.getColor(), move.getX(), move.getY());
             /** Determine score */
             int score = -negamax(state, depth - 1, color.other());
             /** Compare with previous results */
@@ -88,7 +88,7 @@ public abstract class NegaMax implements Strategy {
      * Getters and Setters
      */
 
-    protected Move getBestMove() {
+    protected MoveSuggestion getBestMove() {
         return bestMove;
     }
 
@@ -104,7 +104,7 @@ public abstract class NegaMax implements Strategy {
         this.depth = Math.max(1, depth);
     }
 
-    protected void setBestMove(Move bestMove) {
+    protected void setBestMove(MoveSuggestion bestMove) {
         this.bestMove = bestMove;
     }
 

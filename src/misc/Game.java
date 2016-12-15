@@ -1,7 +1,5 @@
 package misc;
 
-import javafx.application.Platform;
-import javafx.stage.Stage;
 import misc.gui.GUI;
 import misc.player.Player;
 import misc.player.human.input.DrawRequest;
@@ -78,7 +76,7 @@ public class Game {
                 final int x = ((MoveInput) input).getX();
                 final int y = ((MoveInput) input).getY();
                 /** Check if the move is valid. If so, the move is performed */
-                if (!this.state.doMove(new Move(player.getColor(), x, y))) {
+                if (!this.state.doMove(player.getColor(), x, y)) {
                     /** The move is invalid, ask the current player for new input */
                     continue;
                 }

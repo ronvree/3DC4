@@ -74,10 +74,10 @@ public class NegaMaxAlphaBetaTest {
             for (int turn = 0; turn < turns; turn++) {
                 if (playing == Color.RED) {
                     MoveInput m = (MoveInput) p1.decide(state);
-                    state.doMove(new Move(playing, m.getX(), m.getY()));
+                    state.doMove(playing, m.getX(), m.getY());
                 } else {
                     MoveInput m = (MoveInput) p2.decide(state);
-                    state.doMove(new Move(playing, m.getX(), m.getY()));
+                    state.doMove(playing, m.getX(), m.getY());
                 }
                 if (state.lastMoveWasWinning()) {
                     state.undoMove();
@@ -98,7 +98,7 @@ public class NegaMaxAlphaBetaTest {
         for (int x = 0; x < Grid.XRANGE; x++) {
             for (int y = 0; y < Grid.YRANGE; y++) {
                 for (int z = 0; z < Grid.ZRANGE; z++) {
-                    if (color == state.occupiedBy(x, y, z)) {
+                    if (color == state.colorOccupying(x, y, z)) {
                         score++;
                         score += score(x, y, z);
                     }
@@ -119,7 +119,7 @@ public class NegaMaxAlphaBetaTest {
     /**
      * Determine move ordering before evaluation
      */
-    static void orderMoves(List<Move> moves) {}
+    static void orderMoves(List<MoveSuggestion> moves) {}
 
     /**
      * Convenience classes
@@ -137,7 +137,7 @@ public class NegaMaxAlphaBetaTest {
         }
 
         @Override
-        protected void orderMoves(List<Move> moves) {
+        protected void orderMoves(List<MoveSuggestion> moves) {
             NegaMaxAlphaBetaTest.orderMoves(moves);
         }
     }
@@ -154,7 +154,7 @@ public class NegaMaxAlphaBetaTest {
         }
 
         @Override
-        protected void orderMoves(List<Move> moves) {
+        protected void orderMoves(List<MoveSuggestion> moves) {
             NegaMaxAlphaBetaTest.orderMoves(moves);
         }
     }

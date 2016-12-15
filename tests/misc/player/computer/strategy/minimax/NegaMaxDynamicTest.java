@@ -65,7 +65,7 @@ public class NegaMaxDynamicTest {
         }
 
         @Override
-        protected void orderMoves(List<Move> moves) {
+        protected void orderMoves(List<MoveSuggestion> moves) {
             NegaMaxAlphaBetaTest.orderMoves(moves);
         }
     }
@@ -82,7 +82,7 @@ public class NegaMaxDynamicTest {
         }
 
         @Override
-        protected void orderMoves(List<Move> moves) {
+        protected void orderMoves(List<MoveSuggestion> moves) {
             NegaMaxAlphaBetaTest.orderMoves(moves);
         }
 

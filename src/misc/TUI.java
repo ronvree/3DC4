@@ -68,7 +68,7 @@ public abstract class TUI {
             for (int z = Grid.ZRANGE - 1; z >= 0; z--) {
                 String[] row = new String[Grid.XRANGE];
                 for (int x = 0; x < Grid.XRANGE; x++) {
-                    row[x] = colorToString(state.occupiedBy(x, y, z));
+                    row[x] = colorToString(state.colorOccupying(x, y, z));
                 }
                 sb.append(String.format(PIECE_LINE, row));
             }
