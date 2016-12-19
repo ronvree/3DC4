@@ -27,7 +27,7 @@ public class NegaPlayer extends ComputerPlayer {
             }
 
             @Override
-            protected void orderMoves(List<MoveSuggestion> moves) {
+            protected void orderMoves(List<MoveSuggestion> moves, GameState state) {
 
             }
 

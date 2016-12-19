@@ -137,7 +137,7 @@ public class NegaMaxAlphaBetaTest {
         }
 
         @Override
-        protected void orderMoves(List<MoveSuggestion> moves) {
+        protected void orderMoves(List<MoveSuggestion> moves, GameState state) {
             NegaMaxAlphaBetaTest.orderMoves(moves);
         }
     }
@@ -154,7 +154,7 @@ public class NegaMaxAlphaBetaTest {
         }
 
         @Override
-        protected void orderMoves(List<MoveSuggestion> moves) {
+        protected void orderMoves(List<MoveSuggestion> moves, GameState state) {
             NegaMaxAlphaBetaTest.orderMoves(moves);
         }
     }

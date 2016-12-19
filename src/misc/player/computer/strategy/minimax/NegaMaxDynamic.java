@@ -67,7 +67,7 @@ public abstract class NegaMaxDynamic extends NegaMaxAlphaBeta {
         /** Generate move options */
         List<MoveSuggestion> moveOptions = Strategy.generatePossibleMoves(state, color);
         /** Calculate order in which moves should be evaluated */
-        orderMoves(moveOptions);
+        orderMoves(moveOptions, state);
         /** Evaluate all possible moves. Minimize loss for maximal result */
         int bestScore = Integer.MIN_VALUE;
         for (MoveSuggestion move : moveOptions) {

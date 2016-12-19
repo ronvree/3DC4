@@ -37,7 +37,7 @@ public abstract class NegaMax implements Strategy {
     /**
      * Option to explore certain moves first
      */
-    protected abstract void orderMoves(List<MoveSuggestion> moves);
+    protected abstract void orderMoves(List<MoveSuggestion> moves, GameState state);
 
     /**
      * Run the negamax algorithm to determine the best move
@@ -63,7 +63,7 @@ public abstract class NegaMax implements Strategy {
         /** Generate move options */
         List<MoveSuggestion> moveOptions = Strategy.generatePossibleMoves(state, color);
         /** Calculate order in which moves should be evaluated */
-        orderMoves(moveOptions);
+        orderMoves(moveOptions, state);
         /** Evaluate all possible moves. Minimize loss for maximal result */
         int bestScore = Integer.MIN_VALUE;
         for (MoveSuggestion move : moveOptions) {
