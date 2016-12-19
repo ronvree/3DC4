@@ -14,7 +14,7 @@ public abstract class ComputerPlayer extends Player {
     /**
      * Strategy upon which moves are based
      */
-    private Strategy strategy;
+    protected Strategy strategy;
 
     /**
      * Constructor

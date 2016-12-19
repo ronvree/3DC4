@@ -34,9 +34,4 @@ public class NegaPlayer extends ComputerPlayer {
         });
     }
 
-    @Override
-    public boolean acceptDraw(GameState state) {
-        return false;
-    }
-
 }

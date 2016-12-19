@@ -39,11 +39,6 @@ public abstract class Player {
     public abstract PlayerInput decide(GameState state);
 
     /**
-     * @return whether the player accepts resignation
-     */
-    public abstract boolean acceptDraw(GameState state);
-
-    /**
      * String representation of a player
      */
     @Override

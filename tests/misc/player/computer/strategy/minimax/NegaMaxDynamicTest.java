@@ -94,10 +94,6 @@ public class NegaMaxDynamicTest {
             super(name, color, strategy);
         }
 
-        @Override
-        public boolean acceptDraw(GameState state) {
-            return false;
-        }
     }
 
 

@@ -13,8 +13,4 @@ public class NaivePlayer extends ComputerPlayer {
         super(String.format("Naive Player (%s)", color.toString()), color, new NaiveStrategy());
     }
 
-    @Override
-    public boolean acceptDraw(GameState state) {
-        return false;
-    }
 }

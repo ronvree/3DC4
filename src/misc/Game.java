@@ -2,7 +2,6 @@ package misc;
 
 import misc.gui.GUI;
 import misc.player.Player;
-import misc.player.human.input.DrawRequest;
 import misc.player.human.input.MoveInput;
 import misc.player.human.input.PlayerInput;
 import misc.player.human.input.Resignation;
@@ -84,19 +83,7 @@ public class Game {
             } else if (input instanceof Resignation) {
                 declareWinner(waitingPlayer());
                 break;
-            /** The current player has requested a draw. Ask if the opponent agrees and if so declare a draw. If not, ask new input from current player */
-            } else if (input instanceof DrawRequest) {
-                boolean draw = waitingPlayer().acceptDraw(state.deepCopy());
-                if (draw) {
-                    /** Opponent accepted. The game ends in a draw */
-                    declareDraw();
-                    break;
-                } else {
-                    /** Opponent declined, ask the current player for new input */
-                    continue;
-                }
             }
-
             /** Check if the move that has been made resulted in a win for the current player */
             if (state.lastMoveWasWinning()) {
                 declareWinner(currentPlayer());

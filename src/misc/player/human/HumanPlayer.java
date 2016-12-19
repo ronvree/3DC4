@@ -38,8 +38,6 @@ public class HumanPlayer extends Player {
 
     /** The player is asked to make a move */
     private static final String MOVE_REQUEST = "what is your next move?";
-    /** The player is asked to agree to a draw */
-    private static final String DRAW_REQUEST = "The opponent proposed a draw. Accept? (" + YES + "/" + NO + ")";
     /** The player is informed their input was invalid */
     private static final String INVALID_INPUT = "Input invalid! Try again";
     /** Where the human player input is obtained from */
@@ -68,10 +66,6 @@ public class HumanPlayer extends Player {
                 result = new Resignation();
                 break;
             }
-            if (input.equals(DRAW)) {
-                result = new DrawRequest();
-                break;
-            }
             if (input.equals(HELP)) {
                 result =  new HelpRequest();
                 break;
@@ -89,29 +83,6 @@ public class HumanPlayer extends Player {
 
 //        scanner.close();
         return result;
-    }
-
-    /**
-     * Ask the player if they accept a draw
-     */
-    @Override
-    public boolean acceptDraw(GameState state) { // TODO -- show game state
-        System.out.println(DRAW_REQUEST);
-        Scanner scanner = new Scanner(INPUT_SOURCE);
-        boolean accept;
-        do {
-            String input = scanner.nextLine();
-            if (input.equals(YES)) {
-                accept = true;
-                break;
-            } else if (input.equals(NO)) {
-                accept = false;
-                break;
-            }
-            System.out.println(INVALID_INPUT);
-        } while (true);
-        scanner.close();
-        return accept;
     }
 
     /**
