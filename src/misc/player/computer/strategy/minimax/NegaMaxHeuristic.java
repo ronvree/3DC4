@@ -36,7 +36,9 @@ public class NegaMaxHeuristic extends NegaMax {
     public MoveInput determineMove(GameState state) { // TODO
         setBestMove(null);
         Move moveByOpponent = state.getLastMove();
-        extendedState.doMove(moveByOpponent.getColor(), moveByOpponent.getX(), moveByOpponent.getY());
+        if (moveByOpponent != null) {
+            extendedState.doMove(moveByOpponent.getColor(), moveByOpponent.getX(), moveByOpponent.getY());
+        }
         negamax(extendedState, getDepth(), getMaximizingColor(), -Integer.MAX_VALUE, Integer.MAX_VALUE);
         tt.clear();
         extendedState.doMove(getMaximizingColor(), getBestMove().getX(), getBestMove().getY());
