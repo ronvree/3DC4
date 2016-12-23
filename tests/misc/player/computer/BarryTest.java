@@ -1,9 +1,8 @@
 package misc.player.computer;
 
 import misc.Color;
+import misc.player.computer.barry.Barry;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *

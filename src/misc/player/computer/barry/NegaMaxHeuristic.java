@@ -1,12 +1,11 @@
-package misc.player.computer.strategy.minimax;
+package misc.player.computer.barry;
 
 import misc.*;
 import misc.player.computer.strategy.Strategy;
+import misc.player.computer.strategy.minimax.NegaMax;
 import misc.player.human.input.MoveInput;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static misc.Game.CONNECT;
 import static misc.Grid.XRANGE;
@@ -16,46 +15,54 @@ import static misc.Grid.ZRANGE;
 /**
  *
  */
-public class NegaMaxHeuristic extends NegaMax {
+class NegaMaxHeuristic extends NegaMax {
 
     /** State that memorizes additional information about the game */
-    private ExtendedGameState extendedState;
+    private final ExtendedGameState extendedState;
     /** Transposition table. Store game states as hashes */
-    private HashMap<Integer, TableEntry> tt;
+    private final HashMap<Integer, TableEntry> tt;
 
     /**
      * Constructor
      */
-    public NegaMaxHeuristic(int depth, Color color) {
+    NegaMaxHeuristic(int depth, Color color) {
         super(depth, color);
         extendedState = new ExtendedGameState();
         tt = new HashMap<>();
     }
 
+    /** Use the extended game state to determine a move */
     @Override
-    public MoveInput determineMove(GameState state) { // TODO
+    public MoveInput determineMove(GameState state) {
         setBestMove(null);
+        /** Apply move of opponent to the extended game state */
         Move moveByOpponent = state.getLastMove();
         if (moveByOpponent != null) {
             extendedState.doMove(moveByOpponent.getColor(), moveByOpponent.getX(), moveByOpponent.getY());
         }
+        /** Run the mini-max algorithm */
         negamax(extendedState, getDepth(), getMaximizingColor(), -Integer.MAX_VALUE, Integer.MAX_VALUE);
+        /** Reset the transposition table */
         tt.clear();
+        /** Apply own move to the game */
         extendedState.doMove(getMaximizingColor(), getBestMove().getX(), getBestMove().getY());
         return new MoveInput(getBestMove().getX(), getBestMove().getY());
     }
 
+    /** Assign a score to the game state */
     @Override
     protected int score(GameState state, Color color) {
         if (state instanceof ExtendedGameState) {
             int score = 0;
+            /** Sum a score for all chains which are winnable */
             for (Chain chain : ((ExtendedGameState) state).getWinnableChains()) {
+                /** Get the chain length for each color */
                 int redLength = chain.length(Color.RED);
                 int yelLength = chain.length(Color.YELLOW);
-
-                int redScore = (int) Math.pow(4, redLength);
-                int yelScore = (int) Math.pow(4, yelLength);
-
+                /** Assign a score to the chain */
+                int redScore = (int) Math.pow(2, redLength);
+                int yelScore = (int) Math.pow(2, yelLength);
+                /** Add score to total */
                 if (color == Color.RED) {
                     score += redScore;
                     score -= yelScore;
@@ -66,16 +73,32 @@ public class NegaMaxHeuristic extends NegaMax {
             }
             return score;
         }
-        return 0; // TODO
+        return 0;
     }
 
+    /** Determine the order in which moves are evaluated */
     @Override
     protected void orderMoves(List<MoveSuggestion> moves, GameState state) {
         if (state instanceof ExtendedGameState) {
-
+            Map<MoveSuggestion, Integer> scoreMap = new HashMap<>();
+            /** Calculate the direct effect on the grid by applying each move */
+            for (MoveSuggestion suggestion : moves) {
+                state.doMove(getMaximizingColor(), suggestion.getX(), suggestion.getY());
+                int score = score(state, getMaximizingColor());
+                scoreMap.put(suggestion, score);
+                state.undoMove();
+            }
+            /** Sort moves based on their direct effect. Best moves go first */
+            moves.sort((o1, o2) -> {
+                if (scoreMap.get(o1) > scoreMap.get(o2)) {
+                    return -1;
+                } else if (scoreMap.get(o1) < scoreMap.get(o2)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
         }
-
-        // TODO
     }
 
     /**
@@ -122,6 +145,11 @@ public class NegaMaxHeuristic extends NegaMax {
                     setBestMove(move);
                 }
             }
+
+            if (depth == getDepth()) {
+                System.out.printf("Rated move %s as %d\n\r", move.toString(), score);
+            }
+
             /** Undo move for reuse of grid */
             state.undoMove();
             /** Prune! */
@@ -154,7 +182,7 @@ public class NegaMaxHeuristic extends NegaMax {
         /** A list of all winnable chains */
         private final ArrayList<Chain> winnableChains;
 
-        public ExtendedGameState() {
+        private ExtendedGameState() {
             winnableChains = new ArrayList<>();
             /** Initialize the chain mapping */
             chains = new ArrayList[Grid.XRANGE][Grid.YRANGE][Grid.ZRANGE];
@@ -411,20 +439,24 @@ public class NegaMaxHeuristic extends NegaMax {
 
     }
 
-
     /**
      * Points to all colors that could potentially form a chain
      */
     private class Chain {
 
+        /** Coordinates of the slots forming this chain */
         private final Coordinate[] slots;
+        /** GameState in which this chain could be formed */
         private final ExtendedGameState state;
-
+        /** Indicates if the chain is winnable by a player */
         private boolean winnable;
+        /** Amount of red pieces in the chain */
         private int redCount;
+        /** Amount of yellow pieces in the chain */
         private int yelCount;
 
-        public Chain(ExtendedGameState state, Coordinate... slots) {
+        /** Construct a new chain in a certain GameState, consisting out of the specified slots */
+        private Chain(ExtendedGameState state, Coordinate... slots) {
             this.slots = slots;
             this.state = state;
             this.winnable = true;
@@ -432,7 +464,8 @@ public class NegaMaxHeuristic extends NegaMax {
             this.yelCount = 0;
         }
 
-        public void update() { // TODO? -- only one slot needs checking
+        /** Update the chain's instance variables */
+        private void update() { // TODO? -- only one slot needs checking
             redCount = 0;
             yelCount = 0;
             winnable = true;
@@ -444,12 +477,14 @@ public class NegaMaxHeuristic extends NegaMax {
                     yelCount++;
                 }
             }
+            /** Check if both players have pieces in this chain */
             if (redCount > 0 && yelCount > 0) {
                 winnable = false;
             }
         }
 
-        public int length(Color color) {
+        /** Return how many pieces of the specified color are in this chain */
+        private int length(Color color) {
             switch (color)  {
                 case RED:
                     return redCount;
@@ -460,13 +495,13 @@ public class NegaMaxHeuristic extends NegaMax {
             }
         }
 
-        public boolean isWinnable() {
+        /** Return if the chain is winnable by a player */
+        private boolean isWinnable() {
             return winnable;
         }
 
 
     }
-
 
     /**
      * Data structure for storing evaluated moves

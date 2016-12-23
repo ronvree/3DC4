@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class NegaMax implements Strategy {
 
     /** Score for winning game */
-    static final int WIN = 10000;
+    protected static final int WIN = 10000;
 
     /** Color of maximizing player */
     private final Color maximizingColor;

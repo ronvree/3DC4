@@ -2,7 +2,7 @@ package misc.testing;
 
 import misc.Color;
 import misc.Game;
-import misc.player.computer.Barry;
+import misc.player.computer.barry.Barry;
 import misc.player.computer.NegaPlayer;
 
 /**
@@ -17,6 +17,7 @@ public class NegaVSNega {
 
         Barry badpak = new Barry(Color.YELLOW);
         Game game = new Game(p1, badpak);
+//        Game game = new Game(badpak, p1);
 
 //        Game game = new Game(p1, p2);
 
