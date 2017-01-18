@@ -7,11 +7,43 @@ public abstract class Message {
     public abstract String toJSON();
 
     public static String moveToString(ColumnCoordinate move) {
-        return null; // TODO
+        String s = "";
+        switch (move.getX()) {
+            case 0:
+                s = "a";
+                break;
+            case 1:
+                s = "b";
+                break;
+            case 2:
+                s = "c";
+                break;
+            case 3:
+                s = "d";
+        }
+        return s + move.getY();
     }
 
     public static ColumnCoordinate parseMove(String string) {
-        return null; // TODO
+        char s = string.charAt(0);
+        int x;
+        switch (s) {
+            case 'a':
+                x = 0;
+                break;
+            case 'b':
+                x = 1;
+                break;
+            case 'c':
+                x = 2;
+                break;
+            case 'd':
+                x = 3;
+                break;
+            default:
+                x = 0;
+        }
+        return new ColumnCoordinate(x, Character.getNumericValue(string.charAt(1)));
     }
 
     public static class FreeLobby {

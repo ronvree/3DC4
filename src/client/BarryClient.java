@@ -113,7 +113,7 @@ public class BarryClient {
             boolean started = false;
             while (!started) {
                 wait(500);
-                sendServerMessage(new StartGame());
+                startGame();
                 Event message = getServerMessage();
                 started = message instanceof Event.GameHasStarted;
             }
@@ -124,17 +124,21 @@ public class BarryClient {
             Barry barry = new Barry(color);
 
             boolean gameEnded = false;
+            boolean playerTurn = first;
             while (!gameEnded) {
-                if (message instanceof Event.MakeMove) {
+                if (message instanceof Event.MakeMove && playerTurn) {
                     ColumnCoordinate move = makeMove(barry);
                     gameState.doMove(color, move.getX(), move.getY());
-                } else if (message instanceof Event.OpponentMoved) {
+                    playerTurn = false;
+                } else if (message instanceof Event.OpponentMoved && !playerTurn) {
                     ColumnCoordinate move = ((Event.OpponentMoved) message).getMove();
                     gameState.doMove(color.other(), move.getX(), move.getY());
+                    playerTurn = true;
                 } else if (message instanceof Event.GameOver) {
                     gameEnded = true;
                     System.out.println(((Event.GameOver) message).getWinnerName());
                 }
+                message = getServerMessage();
             }
             // Exit game/Restart
             exitGame();

@@ -46,7 +46,7 @@ public abstract class Event extends Message {
                     for (Object o : lobbyArray) {
                         JSONObject lobby = (JSONObject) o;
                         String opponent = (String) lobby.get("opponent");
-                        int roomNumber = Integer.parseInt((String) lobby.get("room number"));
+                        int roomNumber = ((Long) lobby.get("room number")).intValue();
                         freeLobbies.add(new FreeLobby(opponent, roomNumber));
                     }
                     return new PlacedInLobby(json, message, freeLobbies);
@@ -63,7 +63,8 @@ public abstract class Event extends Message {
                     return new OpponentMoved(json, message, move);
                 case "game over":
                     String winnerName = (String) ((JSONObject) parsed).get("winner");
-                    ColumnCoordinate winningMove = Message.parseMove((String) ((JSONObject) parsed).get("winning move"));
+//                    ColumnCoordinate winningMove = Message.parseMove((String) ((JSONObject) parsed).get("winning move"));
+                    ColumnCoordinate winningMove = null;
                     return new GameOver(json, message, winnerName, winningMove);
                 case "error":
                     String reason = (String) ((JSONObject) parsed).get("reason");
