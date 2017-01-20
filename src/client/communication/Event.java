@@ -1,8 +1,6 @@
 package client.communication;
 
 import misc.ColumnCoordinate;
-import misc.Coordinate;
-import misc.Move;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -63,7 +61,7 @@ public abstract class Event extends Message {
                     return new OpponentMoved(json, message, move);
                 case "game over":
                     String winnerName = (String) ((JSONObject) parsed).get("winner");
-//                    ColumnCoordinate winningMove = Message.parseMove((String) ((JSONObject) parsed).get("winning move"));
+//                    ColumnCoordinate winningMove = Message.parseMove((String) ((JSONObject) parsed).get("winning move")); TODO
                     ColumnCoordinate winningMove = null;
                     return new GameOver(json, message, winnerName, winningMove);
                 case "error":
