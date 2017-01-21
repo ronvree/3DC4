@@ -1,8 +1,5 @@
 package misc;
 
-/**
- *
- */
 public class MoveSuggestion {
 
     /** Color of the move */

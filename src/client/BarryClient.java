@@ -35,7 +35,6 @@ public class BarryClient {
     public static void main(String[] args) {
         try {
             BarryClient client = new BarryClient();
-//            client.playGame();
             client.startSession();
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,11 +49,6 @@ public class BarryClient {
             e.printStackTrace();
         }
     }
-
-//    private void playGame() {
-//        OnlineGame game = new OnlineGame();
-//        game.play();
-//    }
 
     private void startSession() {
         new Session();
@@ -196,7 +190,7 @@ public class BarryClient {
                     gameEnded = true;
                     System.out.println(((Event.GameOver) message).getWinnerName());
                 }
-                TUI.prettyPrint(gameState);
+//                System.out.println(TUI.prettyPrint(gameState));
                 message = getServerMessage();
             }
             // Exit game
@@ -222,110 +216,8 @@ public class BarryClient {
             sendServerMessage(new ExitGame());
         }
 
+
     }
-//
-//    private class OnlineGame {
-//
-//        private final GameState gameState;
-//
-//        OnlineGame() {
-//            this.gameState = new GameState();
-//        }
-//
-//        private void play() {
-//            // Join server
-//            boolean connected = false;
-//            List<Message.FreeLobby> lobbies = null;
-//            while (!connected) {
-//                BarryClient.wait(500);
-//                connect("Barry");
-//                Event message = getServerMessage();
-//                connected = message instanceof Event.PlacedInLobby;
-//                System.out.println(message);
-//                if (connected) {
-//                    lobbies = ((Event.PlacedInLobby) message).getFreeLobbies();
-//                }
-//            }
-//            System.out.printf("Connected to server");
-//            // Join game
-//            showLobbies(lobbies);
-//            boolean joined = false;
-//            while (!joined) {
-//                BarryClient.wait(500);
-//                int roomNumber = Integer.parseInt(JOptionPane.showInputDialog("Select room number: "));
-//                join(roomNumber);
-//                joined = getServerMessage() instanceof Event.PlacedInGame;
-//            }
-//            // Start game
-//            boolean started = false;
-//            while (!started) {
-//                BarryClient.wait(500);
-//                startGame();
-//                started = getServerMessage() instanceof Event.GameHasStarted;
-//            }
-//            // Perform moves/Read moves
-//            Event message = getServerMessage();
-//            boolean first = message instanceof Event.MakeMove;
-//            Color color = first? Color.RED:Color.YELLOW;
-//            Barry barry = new Barry(color);
-//
-//            boolean gameEnded = false;
-//            boolean playerTurn = first;
-//            while (!gameEnded) {
-//                if (message instanceof Event.MakeMove && playerTurn) {
-//                    ColumnCoordinate move = makeMove(barry);
-//                    gameState.doMove(color, move.getX(), move.getY());
-//                    playerTurn = false;
-//                } else if (message instanceof Event.OpponentMoved && !playerTurn) {
-//                    ColumnCoordinate move = ((Event.OpponentMoved) message).getMove();
-//                    gameState.doMove(color.other(), move.getX(), move.getY());
-//                    playerTurn = true;
-//                } else if (message instanceof Event.GameOver) {
-//                    gameEnded = true;
-//                    System.out.println(((Event.GameOver) message).getWinnerName());
-//                }
-//                TUI.prettyPrint(gameState);
-//                message = getServerMessage();
-//            }
-//            // Exit game/Restart
-//            exitGame();
-//            // Disconnect
-//            disconnect();
-//        }
-//
-//        private void showLobbies(List<Message.FreeLobby> lobbies) {
-//            for (Message.FreeLobby lobby : lobbies) {
-//                System.out.println(lobby.toString());
-//            }
-//        }
-//
-//        private void connect(String name) {
-//            sendServerMessage(new Connect(name));
-//        }
-//
-//        private void join(int gameNumber) {
-//            sendServerMessage(new JoinGame(gameNumber));
-//        }
-//
-//        private void startGame() {
-//            sendServerMessage(new StartGame());
-//        }
-//
-//        private ColumnCoordinate makeMove(Barry barry) {
-//            MoveInput move = (MoveInput) barry.decide(gameState.deepCopy());
-//            ColumnCoordinate decision = new ColumnCoordinate(move.getX(), move.getY());
-//            sendServerMessage(new DoMove(decision));
-//            return decision;
-//        }
-//
-//        private void exitGame() {
-//            sendServerMessage(new ExitGame());
-//        }
-//
-//        private void disconnect() {
-//            sendServerMessage(new Disconnect());
-//        }
-//
-//    }
+
 
 }

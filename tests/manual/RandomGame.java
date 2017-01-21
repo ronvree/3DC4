@@ -1,4 +1,4 @@
-package misc.testing;
+package manual;
 
 import misc.Color;
 import misc.Game;

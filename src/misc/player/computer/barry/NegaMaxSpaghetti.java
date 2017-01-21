@@ -15,20 +15,25 @@ import static misc.Grid.ZRANGE;
 /**
  *
  */
-class NegaMaxHeuristic extends NegaMax {
+class NegaMaxSpaghetti extends NegaMax {
 
     /** State that memorizes additional information about the game */
     private final ExtendedGameState extendedState;
     /** Transposition table. Store game states as hashes */
     private final HashMap<Integer, TableEntry> tt;
 
+    /** Principal variation transposition table. Keep the scores of the moves under the best move's node. Used for move ordering */
+    private final Map<Integer, Map<Integer, Integer>> pvtt; // TODO -- Benchmark for improvement
+
     /**
      * Constructor
      */
-    NegaMaxHeuristic(int depth, Color color) {
+    NegaMaxSpaghetti(int depth, Color color) {
         super(depth, color);
         extendedState = new ExtendedGameState();
         tt = new HashMap<>();
+
+        pvtt = new HashMap<>();
     }
 
     /** Use the extended game state to determine a move */
@@ -42,10 +47,35 @@ class NegaMaxHeuristic extends NegaMax {
         }
         /** Run the mini-max algorithm */
         negamax(extendedState, getDepth(), getMaximizingColor(), -Integer.MAX_VALUE, Integer.MAX_VALUE);
+        /** Apply own move to private game copy */
+        extendedState.doMove(getMaximizingColor(), getBestMove().getX(), getBestMove().getY());
+
+        /** Set move ordering for next move */
+        pvtt.clear();
+        /**  - Iterate through all moves that can be made by opponent */
+        for (MoveSuggestion opponentSuggestion : Strategy.generatePossibleMoves(extendedState, getMaximizingColor().other())) {
+            extendedState.doMove(opponentSuggestion.getColor(), opponentSuggestion.getX(), opponentSuggestion.getY());
+            Map<Integer, Integer> optionScores = new HashMap<>();
+            pvtt.put(extendedState.hashCode(), optionScores);
+            /** Store all branches that have already been evaluated */
+            for (MoveSuggestion suggestion : Strategy.generatePossibleMoves(extendedState, getMaximizingColor())) {
+                extendedState.doMove(suggestion.getColor(), suggestion.getX(), suggestion.getY());
+                Integer branchHash = extendedState.hashCode();
+                /** Obtain branch */
+                TableEntry e = tt.get(branchHash);
+                if (e != null) {
+                    optionScores.put(branchHash, e.getValue());
+                }
+                /** Undo move for reuse of grid */
+                extendedState.undoMove();
+            }
+            /** Undo move for reuse of grid */
+            extendedState.undoMove();
+        }
+
         /** Reset the transposition table */
         tt.clear();
-        /** Apply own move to the game */
-        extendedState.doMove(getMaximizingColor(), getBestMove().getX(), getBestMove().getY());
+        /** Return the decision */
         return new MoveInput(getBestMove().getX(), getBestMove().getY());
     }
 
@@ -80,13 +110,11 @@ class NegaMaxHeuristic extends NegaMax {
     @Override
     protected void orderMoves(List<MoveSuggestion> moves, GameState state) {
         if (state instanceof ExtendedGameState) {
+            /** Keep a mapping of the direct scores that result from applying the move */
             Map<MoveSuggestion, Integer> scoreMap = new HashMap<>();
             /** Calculate the direct effect on the grid by applying each move */
             for (MoveSuggestion suggestion : moves) {
-                state.doMove(getMaximizingColor(), suggestion.getX(), suggestion.getY());
-                int score = score(state, getMaximizingColor());
-                scoreMap.put(suggestion, score);
-                state.undoMove();
+                scoreMap.put(suggestion, directEffectOf(suggestion, (ExtendedGameState) state));
             }
             /** Sort moves based on their direct effect. Best moves go first */
             moves.sort((o1, o2) -> {
@@ -98,6 +126,75 @@ class NegaMaxHeuristic extends NegaMax {
                     return 0;
                 }
             });
+        }
+    }
+
+    /** Get the score of the grid after applying the move */
+    private int directEffectOf(MoveSuggestion move, ExtendedGameState state) {
+        state.doMove(move.getColor(), move.getX(), move.getY());
+        int score = score(state, move.getColor());
+        state.undoMove();
+        return score;
+    }
+
+    /** Sort moves based on the principal variation of the previous turn */
+    private void orderMovesByPV(List<MoveSuggestion> moves, ExtendedGameState state) {
+        Map<Integer, Integer> branches = pvtt.get(state.hashCode());
+        if (branches != null) {
+            /** Generate all hashes that result from making the suggested moves. This way scores can be obtained from the transposition table */
+            Map<MoveSuggestion, Integer> hashes = new HashMap<>();
+            for (MoveSuggestion suggestion : moves) {
+                state.doMove(suggestion.getColor(), suggestion.getX(), suggestion.getY());
+                hashes.put(suggestion, state.hashCode());
+                state.undoMove();
+            }
+            /** Put the most promising moves first in the list */
+            Map<MoveSuggestion, Integer> directScores = new HashMap<>(); // Keep a table of direct scores by applying a move so they are only calculated once
+            moves.sort((o1, o2) -> {
+                /** Obtain the values as calculated in the previous call of negamax */
+                Integer value1 = branches.get(hashes.get(o1));
+                Integer value2 = branches.get(hashes.get(o2));
+                /** Compare values */
+                if (value1 != null) {
+                    if (value2 != null) {
+                        /** Both branches have already been evaluated -> check value */
+                        return -Integer.compare(value1, value2); // Results are negated because larger values must appear first in the result
+                    } else {
+                        /** Only branch 1 has been evaluated -> branch 1 > branch 2 */
+                        return 1;
+                    }
+                } else {
+                    if (value2 != null) {
+                        /** Only branch 2 has been evaluated -> branch 1 < branch 2 */
+                        return -1;
+                    } else {
+                        /** Neither branches have been evaluated -> determine score based on direct effect */
+                        if (directScores.containsKey(o1)) {
+                            /** Obtain the direct score from the table */
+                            value1 = directScores.get(o1);
+                        } else {
+                            /** Calculate the score and put it in the table for later use */
+                            int score = directEffectOf(o1, state);
+                            directScores.put(o1, score);
+                            value1 = score;
+                        }
+                        if (directScores.containsKey(o2)) {
+                            /** Obtain the direct score from the table */
+                            value2 = directScores.get(o2);
+                        } else {
+                            /** Calculate the score and put it in the table for later use */
+                            int score = directEffectOf(o2, state);
+                            directScores.put(o2, score);
+                            value2 = score;
+                        }
+                        /** Compare direct scores */
+                        return -Integer.compare(value1, value2);
+                    }
+                }
+            });
+        } else {
+            /** No previous evaluation present. Evaluate by direct effect */
+            orderMoves(moves, state);
         }
     }
 
@@ -130,7 +227,14 @@ class NegaMaxHeuristic extends NegaMax {
         /** Generate move options */
         List<MoveSuggestion> moveOptions = Strategy.generatePossibleMoves(state, color);
         /** Calculate order in which moves should be evaluated */
-        orderMoves(moveOptions, state);
+        if (depth == this.getDepth()) {
+            /** Use result of previous evaluation to determine order */
+//            orderMoves(moveOptions, state);
+            orderMovesByPV(moveOptions, state);
+        } else {
+            /** Order moves based on recalculated heuristics */
+            orderMoves(moveOptions, state);
+        }
         /** Evaluate all possible moves. Minimize loss for maximal result */
         int bestScore = Integer.MIN_VALUE;
         for (MoveSuggestion move : moveOptions) {
@@ -426,7 +530,7 @@ class NegaMaxHeuristic extends NegaMax {
             }
         }
 
-        /** Helper method */
+        /** Convenience method */
         private Color colorOccupying(Coordinate coordinate) {
             return colorOccupying(coordinate.getX(), coordinate.getY(), coordinate.getZ());
         }
